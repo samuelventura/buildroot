@@ -87,8 +87,12 @@ endif
 ERLANG_CONF_OPTS += --disable-builtin-zlib
 ERLANG_DEPENDENCIES += zlib
 
-# Remove source, example, gs and wx files from staging and target.
-ERLANG_REMOVE_PACKAGES = gs wx
+# Remove source, example, gs files from staging and target.
+ERLANG_REMOVE_PACKAGES = gs
+
+ifneq ($(BR2_PACKAGE_ERLANG_WX),y)
+ERLANG_REMOVE_PACKAGES += wx
+endif
 
 ifneq ($(BR2_PACKAGE_ERLANG_MEGACO),y)
 ERLANG_REMOVE_PACKAGES += megaco
