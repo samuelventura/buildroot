@@ -46,4 +46,9 @@ config BR2_PACKAGE_ERLANG_MEGACO
 	  approximately 14MB in size so if you do not need it then
 	  it is recommended not to enable it.
 
+config BR2_PACKAGE_ERLANG_WX
+	bool "install wx application"
+	help
+	  The Megaco application is a framework for building GUI..
+
 endif # BR2_PACKAGE_ERLANG
