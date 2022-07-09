@@ -4,6 +4,10 @@ https://github.com/samuelventura/nerves_system_x86_64/blob/wpekiosk/readme.txt
 https://github.com/WebPlatformForEmbedded/buildroot/tree/main/configs
 https://buildroot.org/downloads/manual/manual.html
 
+https://www.raspberrypi.com/documentation/computers/config_txt.html
+https://www.raspberrypi.com/documentation/computers/configuration.html#hdmi-configuration
+https://avikdas.com/2018/12/31/setting-up-lcd-screen-on-raspberry-pi.html
+
 glib stable toolchain
 rpi4-b dts
 
