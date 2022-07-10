@@ -3,7 +3,9 @@ https://github.com/samuelventura/nerves_system_x86_64/blob/wpekiosk/nerves_defco
 https://github.com/samuelventura/nerves_system_x86_64/blob/wpekiosk/readme.txt
 https://github.com/WebPlatformForEmbedded/buildroot/tree/main/configs
 https://buildroot.org/downloads/manual/manual.html
+http://underpop.online.fr/b/buildroot/en/rebuild-pkg.htm.gz
 
+https://wpewebkit.org/code/
 https://www.raspberrypi.com/documentation/computers/config_txt.html
 https://www.raspberrypi.com/documentation/computers/configuration.html#hdmi-configuration
 https://avikdas.com/2018/12/31/setting-up-lcd-screen-on-raspberry-pi.html
@@ -23,6 +25,7 @@ make -j16
 
 #from build machine
 sudo dd if=output/images/sdcard.img of=/dev/sdb bs=4M conv=sync status=progress
+sudo eject /dev/sdb
 
 RESULTS
 
@@ -39,6 +42,27 @@ login: root
 >weston
 >cog
 
+#ssh requires to set a password from rpi console
+#BR2_TARGET_GENERIC_ROOT_PASSWD="rpi"
+scp weston.ini root@10.77.3.171:
+ssh root@10.77.3.171
+date -s 2022-07-07
+export XDG_RUNTIME_DIR=/root
+weston --tty=1 &
+weston --tty=1 -c/root/weston.ini &
+export WAYLAND_DISPLAY=wayland-1
+cog --webprocess-failure=exit &
+
+DEBUG
+
+WPEBACKEND_FDO_FORCE_SOFTWARE_RENDERING=1 G_MESSAGES_DEBUG=all MESA_DEBUG=1 EGL_LOG_LEVEL=debug LIBGL_DEBUG=verbose WAYLAND_DEBUG=1
+export WPEBACKEND_FDO_FORCE_SOFTWARE_RENDERING=1 
+export G_MESSAGES_DEBUG=all 
+export MESA_DEBUG=1 
+export EGL_LOG_LEVEL=debug 
+export LIBGL_DEBUG=verbose 
+export WAYLAND_DEBUG=1
+
 TODO
 
 - locale
@@ -50,6 +74,7 @@ TODO
 - wpewebkit remote control
 - wpewebkit js interaction
 - wpe update
+- user land tools: modetest
 * show mouse cursor
 * stable hdmi output
 * self signed certs
@@ -67,11 +92,24 @@ ISSUES
     https://github.com/WebPlatformForEmbedded/meta-wpe/issues/140
     export WPE_BCMRPI_TOUCH=1
     export WPE_BCMRPI_CURSOR=1
+    COG_USE_WAYLAND_CURSOR
+    WaylandCursor
 - xkbcommon: ERROR: couldn't find a Compose file for locale "C" (mapped to "C")
     Still shows after update to en_US.UTF_8
     Needs clean make?
 - TLS certificate has unknown CA, identity mismatch.
-- boot output goes to connected hdmi switched to the other hdmi on login
+- weston selects the highest monitor resolution
+    4k in my case
+    cat /sys/class/drm/card1-HDMI-A-1/modes
+- cog wont go fullscreen
+    export COG_PLATFORM_FDO_VIEW_FULLSCREEN=1
+    export WPE_INIT_VIEW_WIDTH=1920
+    export WPE_INIT_VIEW_HEIGHT=1080
+- hdmi output goes blank after boot sequence
+    repowering the monitor redraws the login prompt
+        dmesg shows: [00:00:29.677] Output 'HDMI-A-1' enabled with head(s) HDMI-A-1
+    sometimes reconnecting the hdmi cable works as well
+    sometime changing the hdmi port works as well
     https://github.com/raspberrypi/firmware/issues/1647
     https://raspberrypi.stackexchange.com/questions/135025/no-hdmi-video-after-boot-sequence
 
