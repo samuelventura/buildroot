@@ -52,6 +52,7 @@ weston --tty=1 &
 weston --tty=1 -c/root/weston.ini &
 export WAYLAND_DISPLAY=wayland-1
 cog --webprocess-failure=exit &
+cog --webprocess-failure=exit --platform=drm &
 
 DEBUG
 
@@ -62,6 +63,11 @@ export MESA_DEBUG=1
 export EGL_LOG_LEVEL=debug 
 export LIBGL_DEBUG=verbose 
 export WAYLAND_DEBUG=1
+
+WPEBACKEND_FDO_FORCE_SOFTWARE_RENDERING=1 G_MESSAGES_DEBUG=all \
+    MESA_DEBUG=1 EGL_LOG_LEVEL=debug LIBGL_DEBUG=verbose WAYLAND_DEBUG=1 \
+    WAYLAND_DISPLAY=wayland-1 XDG_RUNTIME_DIR=/root \
+    cog --webprocess-failure=exit > /root/log.txt 2>&1
 
 TODO
 
@@ -80,6 +86,9 @@ TODO
 * self signed certs
 * slow weston/wpe startup (rpi4b/hdmi)
 * touch display output (blank)
+* youtube demo crashes
+* feels slow even down to 1080p
+* run without weston
 
 ISSUES
 
@@ -88,6 +97,7 @@ ISSUES
 - (cog:289): GLib-GIO-WARNING **: Your application does not implement g_application_activate()
     and has no handlers connected to 'activate' signal. It should do one of these.
 - wpewebkit window wont show mouse cursor
+    capturing the poiter by dragging from outside the window shows the cursor while passing over
     https://github.com/WebPlatformForEmbedded/meta-wpe/issues/170
     https://github.com/WebPlatformForEmbedded/meta-wpe/issues/140
     export WPE_BCMRPI_TOUCH=1
